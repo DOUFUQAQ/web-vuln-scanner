@@ -1,0 +1,19 @@
+# 运行依赖（后端）
+# 本地实测组合：Python 3.12 + 下列版本。
+Flask==3.0.0
+Flask-CORS==4.0.0
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.23
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# 可选：装上就自动读 .env，不装也能跑（app.py 里是 try/except ImportError）
+python-dotenv==1.0.0
+
+# 说明
+# - 原始需求文件里还有 lxml==4.9.3，但代码中 BeautifulSoup 一律显式指定
+#   'html.parser'，lxml 从未被 import，因此这里不再列它。
+# - Werkzeug 是 Flask 的传递依赖，不再单独 pin；同理 Flask-SQLAlchemy
+#   会带入 SQLAlchemy，这里显式 pin SQLAlchemy 是因为 models/ 依赖它的行为。
+# - 前端的依赖见 frontend/package.json（npm ci）。
+# - 只跑单元测试的话，本文件里的包一个都不需要装，见 requirements-dev.txt。

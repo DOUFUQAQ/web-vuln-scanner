@@ -1,0 +1,55 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ---- 虚拟环境 ----
+venv/
+.venv/
+env/
+ENV/
+
+# ---- 测试 / 覆盖率 ----
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# ---- 类型检查 / lint 缓存 ----
+.mypy_cache/
+.ruff_cache/
+
+# ---- 编辑器 ----
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# ---- 前端 ----
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-error.log*
+
+# ---- 运行产物 ----
+# SQLite 数据库与扫描记录一律不入库（里面是测试目标的扫描结果）
+*.db
+*.sqlite
+*.sqlite3
+backend/instance/
+logs/
+*.log
+
+# ---- 凭据 ----
+.env
+.env.*
+!.env.example
