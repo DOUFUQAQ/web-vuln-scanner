@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: unittest (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Byte-compile check
+        run: python -m compileall -q backend scripts tests
+
+      - name: Run unit tests
+        # Flask 用例会因为依赖齐全而真正执行；缺依赖时会自动 skip，不会红
+        run: python -m unittest discover -s tests -t . -v
+
+      - name: Run unit tests without Flask (pure-logic subset)
+        # 验证"只有标准库"时也必须是绿的：flask 相关用例应被 skip
+        run: |
+          pip uninstall -y Flask Flask-Cors Flask-SQLAlchemy SQLAlchemy requests beautifulsoup4 python-dotenv
+          python -m unittest discover -s tests -t .
+
+  lint:
+    name: ruff
+    runs-on: ubuntu-latest
+    continue-on-error: true      # 存量代码未完全 lint-clean，只作提示
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - name: ruff (advisory)
+        run: ruff check backend tests --output-format=github || true
